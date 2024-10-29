@@ -16,9 +16,12 @@ const newTransactionFormSchema = z.object({
 
 type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
 
-export function NewTransactionModal() {
-  const { createTransaction } = useContext(TransactionsContext)
+interface NewTransactionModalProps {
+  onModalOpenStateChange: (value: boolean) => void
+}
 
+export function NewTransactionModal({onModalOpenStateChange}: NewTransactionModalProps) {
+  const { createTransaction } = useContext(TransactionsContext)
 
   const {
     control, // sempre que uma info do form não venha de um input nativo do html
@@ -36,6 +39,7 @@ export function NewTransactionModal() {
   async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
     await createTransaction(data)
     reset()
+    onModalOpenStateChange(false);
   }
 
   return(
