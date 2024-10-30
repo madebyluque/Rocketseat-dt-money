@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { api } from "../lib/axios";
+import { createContext } from "use-context-selector";
 
 interface Transaction {
   id: number
