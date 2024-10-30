@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, useCallback } from "react";
 import { api } from "../lib/axios";
 import { createContext } from "use-context-selector";
 
@@ -34,7 +34,7 @@ interface TransactionsProviderProps {
 export function TransactionsProvider({children}: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
 
-  async function fetchTransactions(query?: string) {
+  const fetchTransactions = useCallback(async (query?: string) => {
     const response = await api.get('/transactions', {
       params: {
         q: query,
@@ -44,22 +44,23 @@ export function TransactionsProvider({children}: TransactionsProviderProps) {
     }) 
 
     setTransactions(response.data)
-  }
+  }, [])
 
 
-  async function createTransaction(data: CreateTransactionInput) {
-    const {description, price, category, type} = data
-    
-    const response = await api.post<Transaction>('/transactions', {
-      description,
-      price,
-      category,
-      type,
-      createdAt: new Date()
-    })
+  const createTransaction = useCallback(
+    async (data: CreateTransactionInput) => {
+      const {description, price, category, type} = data
+      
+      const response = await api.post<Transaction>('/transactions', {
+        description,
+        price,
+        category,
+        type,
+        createdAt: new Date()
+      })
 
-    setTransactions(state => [...state, response.data])
-  }
+      setTransactions(state => [...state, response.data])
+    }, [])
 
   useEffect(() => {
     fetchTransactions()
